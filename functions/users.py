@@ -4,7 +4,7 @@ from routes.auth import hash_password
 from utils.pagination import pagination
 
 
-def all_users(search, is_active, role, page, limit, db):
+async def all_users(search, is_active, role, page, limit, db):
     users = db.query(User)
     if search:
         search_formatted = "%{}%".format(search)
@@ -19,7 +19,7 @@ def all_users(search, is_active, role, page, limit, db):
         return users.all()
 
 
-def create_user(form, db):
+async def create_user(form, db):
     check_user = db.query(User).filter_by(username=form.username).first()
     if check_user:
         raise HTTPException(status_code=403, detail="User already exists!")
@@ -36,7 +36,7 @@ def create_user(form, db):
     return new_user
 
 
-def update_user(form, db):
+async def update_user(form, db):
     user = db.query(User).filter_by(id=form.user_id, is_active=True)
     if user.first() is None:
         raise HTTPException(status_code=404, detail="User not found!")

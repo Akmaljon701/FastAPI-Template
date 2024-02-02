@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI(
-    title="Crud group",
+    title="FastAPI app by Akmaljon",
     responses={200: {'description': 'Ok'}, 201: {'description': 'Created'}, 400: {'description': 'Bad Request'},
                401: {'desription': 'Unauthorized'}}
 )
@@ -30,8 +30,8 @@ def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="Crud group",
-        version="3.8.10",
+        title="FastAPI app by Akmaljon",
+        version="3.10",
         routes=app.routes,
     )
     app.openapi_schema = openapi_schema

@@ -29,7 +29,7 @@ def hash_password(password):
     return pwd_context.hash(password)
 
 
-def access_token_create(data: dict, expires_delta: Optional[timedelta] = None):
+async def access_token_create(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -58,7 +58,7 @@ async def current_user(db: Session = Depends(database), token: str = Depends(oau
 
 async def current_active_user(user: UserCurrent = Depends(current_user)):
     if user.is_active:
-        return current_user
+        return user
     raise HTTPException(status_code=400, detail="Inactive user")
 
 
@@ -93,7 +93,7 @@ async def login_for_access_token(db: Session = Depends(database), form_data: OAu
     if not is_validate_password:
         raise HTTPException(status_code=400, detail="Login or password error!")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = access_token_create(
+    access_token = await access_token_create(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     db.query(User).filter_by(username=form_data.username).update({
