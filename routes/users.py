@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from db import Base, engine, database
+from db import database
 from sqlalchemy.orm import Session
-
 from models.users import User
 from functions.users import all_users, update_user, create_user
 from schemas.users import UserCreate, UserUpdate
 
-Base.metadata.create_all(bind=engine)
 
-router_user = APIRouter()
+router_user = APIRouter(prefix='/user', tags=['User apis'])
 
 
 @router_user.post('/create', )

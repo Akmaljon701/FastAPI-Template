@@ -22,7 +22,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
-login_router = APIRouter()
+login_router = APIRouter(prefix='/auth', tags=['User auth section'],)
 
 
 def hash_password(password):

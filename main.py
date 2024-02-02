@@ -1,17 +1,17 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-from routes import auth, users
 from db import Base, engine
-
+from routes import auth, users
 from fastapi.middleware.cors import CORSMiddleware
 
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Crud group",
     responses={200: {'description': 'Ok'}, 201: {'description': 'Created'}, 400: {'description': 'Bad Request'},
                401: {'desription': 'Unauthorized'}}
 )
+
+Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,8 +22,8 @@ app.add_middleware(
 )
 
 
-app.include_router(auth.login_router, prefix='/auth', tags=['User auth section'],)
-app.include_router(users.router_user, prefix='/user', tags=['User apis'],)
+app.include_router(auth.login_router)
+app.include_router(users.router_user)
 
 
 def custom_openapi():

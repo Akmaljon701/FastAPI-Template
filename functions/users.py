@@ -10,10 +10,9 @@ def all_users(search, is_active, role, page, limit, db):
         search_formatted = "%{}%".format(search)
         users = users.filter(User.username.like(search_formatted))
     if is_active in [True, False]:
-        users = users.filter(User.status == is_active)
+        users = users.filter(User.is_active == is_active)
     if role:
         users = users.filter(User.role == role)
-    users = users.order_by(User.name.asc())
     if page and limit:
         return pagination(users, page, limit)
     else:
