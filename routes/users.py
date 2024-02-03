@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from db import database
 from sqlalchemy.orm import Session
-from models.users import User
+from models.users import Users
 from functions.users import all_users, update_user, create_user
 from routes.auth import current_active_user
 from schemas.users import UserCreate, UserUpdate, UserCurrent
@@ -21,7 +21,7 @@ async def get_users(search: str = None, is_active: bool = True, user_id: int = 0
                     limit: int = 25,
                     db: Session = Depends(database)):
     if user_id:
-        return db.query(User).filter_by(id=user_id, is_active=True).first()
+        return db.query(Users).filter_by(id=user_id, is_active=True).first()
     else:
         return await all_users(search, is_active, role, page, limit, db)
 

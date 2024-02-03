@@ -1,15 +1,11 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from db import Base, engine
-from routes import auth, users
+from routes import auth, users, wsmanager
 from fastapi.middleware.cors import CORSMiddleware
 
 
-app = FastAPI(
-    title="FastAPI app by Akmaljon",
-    responses={200: {'description': 'Ok'}, 201: {'description': 'Created'}, 400: {'description': 'Bad Request'},
-               401: {'desription': 'Unauthorized'}}
-)
+app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,6 +20,7 @@ app.add_middleware(
 
 app.include_router(auth.login_router)
 app.include_router(users.router_user)
+app.include_router(wsmanager.notification_router)
 
 
 def custom_openapi():

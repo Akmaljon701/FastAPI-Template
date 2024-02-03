@@ -8,7 +8,7 @@ from sqlalchemy.orm.session import Session
 from schemas.auth import TokenData
 from db import database
 from schemas.users import UserCurrent
-from models.users import User
+from models.users import Users
 import os
 from dotenv import load_dotenv
 
@@ -50,7 +50,7 @@ async def current_user(db: Session = Depends(database), token: str = Depends(oau
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = db.query(User).filter_by(username=token_data.username).first()
+    user = db.query(Users).filter_by(username=token_data.username).first()
     if user is None:
         raise credentials_exception
     return user
@@ -59,7 +59,7 @@ async def current_user(db: Session = Depends(database), token: str = Depends(oau
 async def current_active_user(user: UserCurrent = Depends(current_user)):
     if user.is_active:
         return user
-    raise HTTPException(status_code=400, detail="Inactive user")
+    raise HTTPException(status_code=400, detail="The user is inactive")
 
 
 async def get_current_user_socket(websocket: WebSocket, db: Session = Depends(database)):
@@ -77,7 +77,7 @@ async def get_current_user_socket(websocket: WebSocket, db: Session = Depends(da
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = db.query(User).where(User.username == token_data.username).first()
+    user = db.query(Users).where(Users.username == token_data.username).first()
     if user is None:
         raise credentials_exception
     return user
@@ -85,7 +85,7 @@ async def get_current_user_socket(websocket: WebSocket, db: Session = Depends(da
 
 @login_router.post("/token")
 async def login_for_access_token(db: Session = Depends(database), form_data: OAuth2PasswordRequestForm = Depends()):
-    user = db.query(User).filter_by(username=form_data.username, is_active=True).first()
+    user = db.query(Users).filter_by(username=form_data.username, is_active=True).first()
     if user:
         is_validate_password = pwd_context.verify(form_data.password, user.password)
     else:
@@ -96,8 +96,8 @@ async def login_for_access_token(db: Session = Depends(database), form_data: OAu
     access_token = await access_token_create(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    db.query(User).filter_by(username=form_data.username).update({
-        User.token: access_token
+    db.query(Users).filter_by(username=form_data.username).update({
+        Users.token: access_token
     })
     db.commit()
     return {'id': user.id, "access_token": access_token, "role": user.role}
