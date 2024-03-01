@@ -1,8 +1,7 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from fastapi_utils.tasks import repeat_every
 from db import database, SessionLocal
-from models.notifications import Notifications
-from models.users import Users
+from models.models import *
 from notification import manager
 from routes.auth import get_current_user_socket
 from schemas.notifications import NotificationSchema
@@ -14,7 +13,7 @@ notification_router = APIRouter()
 db: Session = SessionLocal()
 
 
-@notification_router.websocket("/ws/connection")
+@notification_router.websocket("/ws/connection/")
 async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(database),
                              user: UserCurrent = Depends(get_current_user_socket)):
     await manager.connect(websocket, user)

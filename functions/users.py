@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from models.users import Users
+from models.models import Users
 from routes.auth import hash_password
 from utils.pagination import pagination
 
@@ -33,7 +33,7 @@ async def create_user(form, db):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return new_user
+    raise HTTPException(status_code=201, detail="Created successfully!")
 
 
 async def update_user(form, db):
@@ -48,4 +48,4 @@ async def update_user(form, db):
         Users.is_active: form.is_active,
     })
     db.commit()
-    return True
+    raise HTTPException(status_code=200, detail="Updated successfully!")

@@ -27,15 +27,6 @@ class UserUpdate(BaseModel):
     is_active: bool
 
 
-class Token(BaseModel):
-    access_token = str
-    token = str
-
-
-class TokenData(BaseModel):
-    id: Optional[str] = None
-
-
 class UserCurrent(BaseModel):
     id: int
     username: str

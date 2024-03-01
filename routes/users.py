@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from db import database
 from sqlalchemy.orm import Session
-from models.users import Users
+from models.models import Users
 from functions.users import all_users, update_user, create_user
 from routes.auth import current_active_user
 from schemas.users import UserCreate, UserUpdate, UserCurrent
@@ -9,11 +9,10 @@ from schemas.users import UserCreate, UserUpdate, UserCurrent
 router_user = APIRouter(prefix='/user', tags=['User apis'])
 
 
-@router_user.post('/create', )
+@router_user.post('/create/', )
 async def add_user(form: UserCreate,
                    db: Session = Depends(database)):
-    if await create_user(form, db):
-        raise HTTPException(status_code=201, detail="Created successfully!")
+    await create_user(form, db)
 
 
 @router_user.get('/', status_code=200)
@@ -26,12 +25,11 @@ async def get_users(search: str = None, is_active: bool = True, user_id: int = 0
         return await all_users(search, is_active, role, page, limit, db)
 
 
-@router_user.put("/update")
+@router_user.put("/update/")
 async def user_update(form: UserUpdate, db: Session = Depends(database)):
-    if await update_user(form, db):
-        raise HTTPException(status_code=200, detail="Updated successfully!")
+    await update_user(form, db)
 
 
-@router_user.get("/current_active")
+@router_user.get("/current_active/")
 async def get_current_active_user(user: UserCurrent = Depends(current_active_user)):
     return user

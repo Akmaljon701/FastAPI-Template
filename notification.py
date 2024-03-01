@@ -1,6 +1,6 @@
 from fastapi import WebSocket, WebSocketDisconnect
 from websockets.exceptions import ConnectionClosedError
-from models.notifications import Notifications
+from models.models import Notifications
 from schemas.notifications import NotificationSchema
 
 
