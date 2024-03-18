@@ -78,7 +78,6 @@ class ConnectionManager:
                 body=message.body,
                 user_id=message.user_id
             ))
-            db.commit()
 
         return sent
 

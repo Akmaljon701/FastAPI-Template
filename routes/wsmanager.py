@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from fastapi_utils.tasks import repeat_every
-from db import database, SessionLocal
+from db import get_db, SessionLocal
 from models.models import *
 from notification import manager
 from routes.auth import get_current_user_socket
@@ -14,7 +14,7 @@ db: Session = SessionLocal()
 
 
 @notification_router.websocket("/ws/connection/")
-async def websocket_endpoint(websocket: WebSocket, db: Session = Depends(database),
+async def websocket_endpoint(websocket: WebSocket, db: Session = get_db,
                              user: UserCurrent = Depends(get_current_user_socket)):
     await manager.connect(websocket, user)
     if user:

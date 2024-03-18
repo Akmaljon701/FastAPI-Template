@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from models.models import Users
 from routes.auth import hash_password
+from utils.commands import ALREADY_EXISTS, CREATED, NOT_FOUND, UPDATED
 from utils.pagination import pagination
 
 
@@ -22,7 +23,7 @@ async def all_users(search, is_active, role, page, limit, db):
 async def create_user(form, db):
     check_user = db.query(Users).filter_by(username=form.username).first()
     if check_user:
-        raise HTTPException(status_code=403, detail="The object already exists!")
+        raise ALREADY_EXISTS
     new_user = Users(
         username=form.username,
         password=hash_password(form.password),
@@ -31,15 +32,13 @@ async def create_user(form, db):
 
     )
     db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    raise HTTPException(status_code=201, detail="Created successfully!")
+    raise CREATED
 
 
 async def update_user(form, db):
     user = db.query(Users).filter_by(id=form.user_id, is_active=True)
     if user.first() is None:
-        raise HTTPException(status_code=404, detail="The object not found!")
+        raise NOT_FOUND
 
     user.update({
         Users.username: form.username,
@@ -48,4 +47,4 @@ async def update_user(form, db):
         Users.is_active: form.is_active,
     })
     db.commit()
-    raise HTTPException(status_code=200, detail="Updated successfully!")
+    raise UPDATED

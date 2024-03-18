@@ -3,11 +3,13 @@ from fastapi.openapi.utils import get_openapi
 from db import Base, engine
 from routes import auth, users, wsmanager
 from fastapi.middleware.cors import CORSMiddleware
-
+from middlewares import unit_of_work_middleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
+app.add_middleware(BaseHTTPMiddleware, dispatch=unit_of_work_middleware)
 
 app.add_middleware(
     CORSMiddleware,
