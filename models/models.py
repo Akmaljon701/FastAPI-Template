@@ -12,7 +12,8 @@ class Users(Base):
     password = Column(String(200))
     role = Column(String(50))
     is_active = Column(Boolean, default=True)
-    token = Column(String(400), default='')
+    access_token = Column(String(400), default='')
+    refresh_token = Column(String(400), default='')
 
     notifications = relationship('Notifications', back_populates='user')
 

@@ -4,6 +4,7 @@ from fastapi import status
 credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                       detail="Could not validate credentials",
                                       headers={"WWW-Authenticate": "Bearer"}, )
+invalid_refresh = HTTPException(detail="Invalid refresh token", status_code=404)
 NOT_FOUND = HTTPException(detail="Not found!", status_code=404)
 CREATED = HTTPException(status_code=201, detail="Created successfully!")
 UPDATED = HTTPException(detail="Successfully updated!", status_code=200)
